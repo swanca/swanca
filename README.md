@@ -21,7 +21,7 @@ cite the RFC they implement.
 | **[HeaderScope](https://github.com/swanca/headerscope)** | Not "is there a CSP" but "what does this CSP permit". A policy with `'unsafe-inline'` passes every presence check while stopping almost nothing. | 69 |
 | **[OGScope](https://github.com/swanca/ogscope)** | What preview card will X, LinkedIn, Slack and the rest actually render for this URL? X shut down its Card Validator; Facebook's needs a developer login. | 86 |
 | **[BotCheck](https://github.com/swanca/botcheck)** | Which AI crawlers is your `robots.txt` letting train on your site? | 65 |
-| **[Origin](https://github.com/swanca/origin)** | Who signed this image and has it changed since? Reads C2PA Content Credentials in the browser — a cryptographic record, not a guess from the pixels. | 35 |
+| **[Origin](https://github.com/swanca/content-origin)** | Who signed this image and has it changed since? Reads C2PA Content Credentials in the browser — a cryptographic record, not a guess from the pixels. | 35 |
 | **[Shade](https://github.com/swanca/shade)** | A daily colour game. One tile is off. Seeded from the date, so everyone gets the same puzzle, and nothing is fetched after load. | 53 |
 
 ### Larger projects
@@ -38,24 +38,28 @@ with fingerprints, and the frozen run that produced every number in the reports.
 A backtest showing a profit is the easy outcome to produce and the hard one to trust. This
 one was built so that failure would be detectable.
 
-**[Plus en Poche](https://github.com/swanca/plus-en-poche)** — a personal finance review for
-French households: which benefits you're probably entitled to, which recurring bills you're
-overpaying, where fuel costs less nearby. One pass, arithmetic shown.
+**[french-benefits-engine](https://github.com/swanca/french-benefits-engine)** — a deterministic
+eligibility engine for French social benefits, extracted from a larger private project.
 
-Twenty-five benefit schemes computed through [OpenFisca](https://openfisca.org), the French
-government's own microsimulation engine, with what you already receive subtracted so the
-total is what you're actually missing. Next.js 16, React 19, Drizzle, PGlite, better-auth.
-59 tests, clean typecheck. The interface is French because the domain is.
+The design constraint that shapes everything: **a rule is validated data, never executable code.**
+The obvious alternative — let an administrator write conditions as code so new benefits need no
+deploy — is a remote code execution hole wearing a CMS costume, and it makes rules untestable.
+So the vocabulary is small and declarative, and anything it cannot express is a gap forced into
+the open rather than hidden in a lambda.
+
+The guarantees are enforced and tested rather than documented: nothing medical is ever inferred,
+an unmodelled situation returns "outside scope" rather than a refusal, stale or malformed review
+dates stop answering, and an invalid catalogue produces no positive match. 22 tests.
 
 ---
 
 ### How I work
 
-**Say what the thing doesn't do.** Every one of these repos has a limits section. The fuel
-prices are declared, not observed. The benefit figures are estimates and the awarding body
-decides. The backtest found nothing.
+**Say what the thing doesn't do.** Every one of these repos has a limits section. The benefits
+engine orients and never decides. A C2PA signature says who signed a file, not whether it is
+true. The backtest found nothing.
 
-**Tests before confidence.** 460 passing across these repos. Where a number appears in a
+**Tests before confidence.** 423 passing across these repos. Where a number appears in a
 README, a test holds it up.
 
 **Cite the source in the code.** If a function implements a spec, the comment names the
